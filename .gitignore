@@ -1,0 +1,37 @@
+# .gitignore
+# Ignore All
+*
+!*/
+
+# White List
+!.gitignore
+!.gitattributes
+!.git/*
+!.github/*
+!*.c
+!*.csv
+!*.tsv
+!*.cpp
+!*.gif
+!*.gpg
+!*.h
+!*.jpg
+!*.js
+!*.json
+!*.txt
+!*.md
+!*.org
+!*.odg
+!*.ott
+!*.ods
+!*.odb
+!*.pdf
+!*.png
+!*.py
+!*.sh
+!*.svg
+!*.tex
+!*.yml
+!*.html
+!*.css
+!*.utx

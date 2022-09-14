@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Torre</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="manifest" href="manifest.json" />
+    <script src="https://unpkg.com/maquette@3.3.4/dist/maquette.umd.js"></script>
+  </head>
+  <body>
+    <div id="fused">
+      <p>Check:</p>
+      <ul>
+        <li>The device you want to connect is correct.</li>
+        <li>Permissions are allowed to execute javascript.</li>
+      </ul>
+      <div class="spinner"></div>
+    </div>
+  <script src="js/gutil.js"></script>
+  <script>
+    // Static utility.
+    const vPage = maquette.createProjector();
+    const h = maquette.h;
+
+    // Static variable.
+    const UNID = gU.genUniqs();
+
+    let appArgs = {
+      busy: false
+    }
+    let noDB = {
+      torre: null
+    }
+
+    // Atomic or Mole component.
+    // There should not contain static (page scoped) variable, I/O, context and outer-positioning styles.
+    // There should return the direct VNode (maquette's object from h()).
+    // An atomic have to contain one item.
+    const aBr = h('br', {}, []);
+    const aHr = h('hr', {}, []);
+    const aSpace = h('', {}, [" "]);
+    const aHrThemeColored = h('hr.theme-color', {key: this}, []);
+    function aA(href, text, selector = ""){ return h('a' + selector, {href:href, target:"_blank", rel:"noopener noreferrer"}, [text]);}
+    function aImg(src, alt, selector = ""){ return h('img'+ selector, {src:src, alt:alt}, []);}
+    function aText(text){ return h('', {}, [text]);};
+    function mButtonWithAtom(onClick, vnode = aText("")){ return h('button', {type:"button", onclick: onClick}, [vnode]);}
+    function mSubmitWithAtom(onClick, text = ""){ return h('button', {type:"submit", onclick: onClick, value:text}, [text]);}
+
+    // Organism component.
+    // There should return an object contain .render() which return the VNode (maquette's object from h()).
+    function orgButtonWithAtom(onClick, vnode = aText("")){
+      return {
+        render: function(status){
+          return h('button', {type:"button", style:"pointer-events: " + ((status) ? "auto;": "none;"), onclick: onClick}, [vnode]);
+        }
+      };
+    }
+
+    function orgLocalFile(id, putMap = function(file){return}){
+      function onInput(e){
+        const files = Array.from(document.getElementById(id).files);
+        files.map(putMap)
+      }
+
+      return {
+        render: function(){
+          return h('input#' + id, {type:"file", oninput: onInput}, []);
+        }
+      };
+    }
+
+    function orgSetWordBox(id, clicked = function(setWord){return;}, atomInButton = aText("NIL")){
+      function onClick(e){
+          clicked(document.getElementById(id).value);
+      }
+
+      return {
+        render: function(word){
+          return h('form',{},[
+            h('input#'+ id, {type:"search", value:word}, []),
+            mButtonWithAtom(onClick, atomInButton)
+          ]);
+        }
+      };
+    }
+
+    function orgSetWordBoxLang(id, clicked = function(setWord){return;}, text, tips = {title:"alert", pattern:".*"}){
+      function onClick(e){
+          clicked(document.getElementById(id).value);
+      }
+
+      return {
+        render: function(word){
+          return h('form',{},[
+            h('input#'+ id, {type:"search", value:word, title: tips.title, pattern: tips.pattern}, []),
+            mButtonWithAtom(onClick, text)
+          ]);
+        }
+      };
+    }
+
+    function orgLabeledCheckbox(id, labelText, changed = function(mark){return;}){
+      function onChange(e){
+        changed(document.getElementById(id).checked);
+      }
+
+      return {
+        render: function(status){
+          return h('label', {}, [
+            h('input#' + id, {type:"checkbox", onchange: onChange, checked: status}, []),
+            aText(labelText)
+          ]);
+        }
+      };
+    }
+
+    // Create page contents.
+    // There are called only the page render.
+    // There should be an object contain .frame() which return VNode (maquette's object from h()).
+
+    var tHeader = {
+      frame: function(){
+        return h('header', {}, [""]);
+      }
+    };
+
+    var tMain = {
+      frame: function(){
+        return h('main', {key:this}, [
+          h('div.contents', {}, [""]),
+          h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, [])
+        ]);
+      }
+    }
+
+    var tFooter = {
+      fixed: h('footer', {}, [
+          aHrThemeColored,
+          h('p', {}, [
+            h('small', {}, [
+              "2021 TD-shi PD(CC0). ",
+              "OSS are ",
+              aA("https://maquettejs.org", "Maquette", ".oss"),
+              " and ",
+              aA("https://github.com/hankchizljaw/modern-css-reset", "Modern CSS reset", ".oss"),
+              ". "
+            ])
+          ])
+        ]),
+      frame: function(){ return tFooter.fixed;}
+    };
+
+    // Page. Start the page rendering.
+    document.addEventListener('DOMContentLoaded', function(){
+      document.getElementById('fused').remove();
+
+      if(gU.storageAvailable('localStorage')){
+        let torre = gU.getItemLsf('TORRE');
+
+        if(torre){
+          noDB.torre = JSON.parse(torre);
+        }
+      }
+      else{
+        confirm("Your browser storage is not available.");
+      }
+
+      vPage.append(document.body, tHeader.frame);
+      vPage.append(document.body, tMain.frame);
+      vPage.append(document.body, tFooter.frame);
+    });
+
+    if ('serviceWorker' in navigator) {
+     navigator.serviceWorker.register('sw.js')
+      .then(
+      function (registration) {
+          if (typeof registration.update == 'function') {
+              registration.update();
+          }
+      })
+      .catch(function (error) {
+        console.log("Error Log: " + error);
+      });
+    }
+  </script>
+  </body>
+</html>

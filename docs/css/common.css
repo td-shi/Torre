@@ -1,0 +1,198 @@
+body {
+  color: black;
+  background-color: whitesmoke;
+  font-family: monospace, sans-serif;
+  margin: 0 auto;
+}
+
+input[type="checkbox" i] {
+  transform: scale(1.5);
+  margin: 0.25rem;
+}
+
+input[type="search" i] {
+  height: 1.8rem;
+}
+
+button[style*="pointer-events: none"] {
+  background-color: lightgray;
+  border-radius: 2px;
+  border-width: 1px;
+}
+
+header {
+  position:fixed;
+  top: 0.2rem;
+  width: 100%;
+}
+
+header div.topSearch {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  height: 2.5rem;
+  font-size: 1.2rem;
+}
+
+header form.topSearchBox {
+  display: inline-flex;
+  align-items: center;
+}
+
+header form.topSearchBox input[type="search" i] {
+  height: 2.2rem;
+  width: 90%;
+}
+
+header form.topSearchBox button {
+  height: 2.2rem;
+}
+
+header div.topPagenation {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 1.5rem;
+  margin-top: 0.4rem;
+  font-size: 1.2rem;
+}
+
+main {
+  margin-top: 5.5rem;
+}
+
+ul.view-config form {
+  display: inline-flex;
+  align-items: center;
+}
+
+ul.glossary-config li {
+  display: flex;
+  align-items: center;
+  height: 2.0rem;
+  margin: 0.1rem;
+  line-height: 1.0rem;
+}
+
+ul.glossary-config li label {
+  display: inline-flex;
+  align-items: center;
+}
+
+dl.term {
+  margin: 0.25rem 0.25rem;
+  border-left: dimgray dashed thin;
+  padding: 0rem 0.2rem;
+}
+
+dl.term dd.target > ul {
+  margin-block-start: 0.25rem; 
+  margin-block-end: 0.25rem;
+}
+
+li.x-status-approved::marker {
+  color: limegreen;
+}
+
+li.x-status-spc::marker {
+  color: lightgreen;
+}
+
+li.x-status-provisional::marker {
+  color: orange;
+}
+
+li.x-status-forbidden::marker {
+  color: yellow;
+}
+
+li.x-status-non-standard::marker {
+  color: darkgray;
+}
+
+li.x-status-obsolete::marker {
+  color: darkgray;
+}
+
+li.x-status-rejected::marker {
+  color: tomato;
+}
+
+dl.term dd.glossary {
+  font-size: small;
+}
+
+footer {
+  width: 100%;
+  margin-top: 4px;
+}
+
+footer p {
+  font-size: smaller;
+}
+
+.spinner:before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 14rem;
+  width: 14rem;
+  margin-top: -7rem;
+  margin-left: -7rem;
+  border-radius: 50%;
+  border: 4px solid #00000000;
+  border-top-color: orange;
+  animation: spinner 0.75s linear infinite;
+}
+
+a.button-like {
+  display: inline-block;
+  cursor: default;
+  background-color: #EEEEEE;
+  margin: 0em;
+  text-align: center;
+  text-decoration: none;
+  padding: 1px 6px;
+  border-width: 1px;
+  border-style: outset;
+  border-color: #888888;
+  border-radius: 3px;
+}
+
+hr.theme-color {
+  color: blueviolet;
+  border-color: blueviolet;
+}
+
+@keyframes spinner { to { transform: rotate(360deg);} }
+
+@media (max-width: 36em){
+  header, body {
+    width: 20em;
+  }
+}
+
+@media (min-width: 36em) and (max-width: 56em){
+  header, body {
+    width: 36em;
+  }
+}
+
+@media (min-width: 56em){
+  header, body {
+    width: 48em;
+  }
+}
+
+@media print{
+  header, footer {
+    display: none;
+  }
+
+  header, body {
+    width: 48em;
+    background-color: white;
+  }
+}
