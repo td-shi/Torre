@@ -36,84 +36,12 @@
       torre: null
     }
 
-    // Atomic or Mole component.
-    // There should not contain static (page scoped) variable, I/O, context and outer-positioning styles.
-    // There should return the direct VNode (maquette's object from h()).
-    // An atomic have to contain one item.
-    const aBr = h('br', {}, []);
-    const aHr = h('hr', {}, []);
-    const aSpace = h('', {}, [" "]);
-    const aHrThemeColored = h('hr.theme-color', {key: this}, []);
-    function aA(href, text, selector = ""){ return h('a' + selector, {href:href, target:"_blank", rel:"noopener noreferrer"}, [text]);}
-    function aImg(src, alt, selector = ""){ return h('img'+ selector, {src:src, alt:alt}, []);}
-    function aText(text){ return h('', {}, [text]);};
-    function mButtonWithAtom(onClick, vnode = aText("")){ return h('button', {type:"button", onclick: onClick}, [vnode]);}
-    function mSubmitWithAtom(onClick, text = ""){ return h('button', {type:"submit", onclick: onClick, value:text}, [text]);}
-
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
     function orgButtonWithAtom(onClick, vnode = aText("")){
       return {
         render: function(status){
           return h('button', {type:"button", style:"pointer-events: " + ((status) ? "auto;": "none;"), onclick: onClick}, [vnode]);
-        }
-      };
-    }
-
-    function orgLocalFile(id, putMap = function(file){return}){
-      function onInput(e){
-        const files = Array.from(document.getElementById(id).files);
-        files.map(putMap)
-      }
-
-      return {
-        render: function(){
-          return h('input#' + id, {type:"file", oninput: onInput}, []);
-        }
-      };
-    }
-
-    function orgSetWordBox(id, clicked = function(setWord){return;}, atomInButton = aText("NIL")){
-      function onClick(e){
-          clicked(document.getElementById(id).value);
-      }
-
-      return {
-        render: function(word){
-          return h('form',{},[
-            h('input#'+ id, {type:"search", value:word}, []),
-            mButtonWithAtom(onClick, atomInButton)
-          ]);
-        }
-      };
-    }
-
-    function orgSetWordBoxLang(id, clicked = function(setWord){return;}, text, tips = {title:"alert", pattern:".*"}){
-      function onClick(e){
-          clicked(document.getElementById(id).value);
-      }
-
-      return {
-        render: function(word){
-          return h('form',{},[
-            h('input#'+ id, {type:"search", value:word, title: tips.title, pattern: tips.pattern}, []),
-            mButtonWithAtom(onClick, text)
-          ]);
-        }
-      };
-    }
-
-    function orgLabeledCheckbox(id, labelText, changed = function(mark){return;}){
-      function onChange(e){
-        changed(document.getElementById(id).checked);
-      }
-
-      return {
-        render: function(status){
-          return h('label', {}, [
-            h('input#' + id, {type:"checkbox", onchange: onChange, checked: status}, []),
-            aText(labelText)
-          ]);
         }
       };
     }
