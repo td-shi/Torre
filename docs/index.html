@@ -38,13 +38,6 @@
 
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
-    function orgButtonWithAtom(onClick, vnode = aText("")){
-      return {
-        render: function(status){
-          return h('button', {type:"button", style:"pointer-events: " + ((status) ? "auto;": "none;"), onclick: onClick}, [vnode]);
-        }
-      };
-    }
 
     // Create page contents.
     // There are called only the page render.
@@ -67,14 +60,14 @@
 
     var tFooter = {
       fixed: h('footer', {}, [
-          aHrThemeColored,
+          h('hr.theme-color', {}, []),
           h('p', {}, [
             h('small', {}, [
               "2021 TD-shi PD(CC0). ",
               "OSS are ",
-              aA("https://maquettejs.org", "Maquette", ".oss"),
+              maquette.atomAnchor("https://maquettejs.org", "Maquette", ".oss"),
               " and ",
-              aA("https://github.com/hankchizljaw/modern-css-reset", "Modern CSS reset", ".oss"),
+              maquette.atomAnchor("https://github.com/hankchizljaw/modern-css-reset", "Modern CSS reset", ".oss"),
               ". "
             ])
           ])

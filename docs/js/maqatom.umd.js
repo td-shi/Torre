@@ -24,6 +24,7 @@
   // Atomic render.
   function atomHr(){ return h('hr', {key: '' + genShortUniq()}, []);}
   function atomBr(){ return h('br', {key: '' + genShortUniq()}, []);}
+  function atomAnchor(href, text, selector = ""){ return h('a' + selector, {href:href, target:"_blank", rel:"noopener noreferrer"}, [text]);}
   function atomText(text, id, classes = {}, style = ''){
     return h('span#' + id, {classes: classes, style: style}, [text]);
   };
@@ -88,6 +89,7 @@
 
   exports.maquette.atomHr = atomHr;
   exports.maquette.atomBr = atomBr;
+  exports.maquette.atomAnchor = atomAnchor;
   exports.maquette.atomText = atomText;
   exports.maquette.atomTextButton = atomTextButton;
   exports.maquette.atomLabelCheckbox = atomLabelCheckbox;
