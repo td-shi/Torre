@@ -50,6 +50,42 @@
     return h('select#' + id, {classes: classes, style: style, onselect: onSelectFunc}, [mapping.results]);
   };
 
+  const MetaNode = function(){
+    this._vr = undefined;
+    this._args = undefined;
+    this._children = [];
+    this._key = genShortUniq();
+  };
+  
+  MetaNode.prototype.addNode = function(m){
+    this._children.push(m);
+  };
+
+  MetaNode.prototype.setRender = function(vr, args){
+    if('function' !== typeof vr){ throw new Error();}
+
+    this._vr = vr;
+    this._args = args;
+  };
+
+  MetaNode.prototype.render = function(){
+      let v = this._vr(this._args)
+      let c = []
+
+      this._children.forEach(function(m){c.push(m.render())});
+      v.children = c;
+
+      return v;
+  };
+
+  function createMetaNode(vr = undefined, args = {}){ // v = function(args){return h();}
+    let m = new MetaNode();
+
+    m.setRender(vr, args);
+
+    return m;
+  };
+
   exports.maquette.atomHr = atomHr;
   exports.maquette.atomBr = atomBr;
   exports.maquette.atomText = atomText;
@@ -57,6 +93,7 @@
   exports.maquette.atomLabelCheckbox = atomLabelCheckbox;
   exports.maquette.atomInputNumber = atomInputNumber;
   exports.maquette.atomCombobox = atomCombobox;
+  exports.maquette.createMetaNode = createMetaNode;
 
 //  Object.defineProperty(exports, '__esModule', { value: true });
 })));
