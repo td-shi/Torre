@@ -25,6 +25,7 @@
     // Static utility.
     const vPage = maquette.createProjector();
     const h = maquette.h;
+    const mN = maquette.createMetaNode;
 
     // Static variable.
     const UNID = gU.genUniqs();
@@ -38,6 +39,10 @@
 
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
+    var menu = mN(function(args){return h('ul');});
+    var menu_li_nop = mN(function(args){return h('li',{}, [h('span', {}, [str(args.text)])]);}, {text:"nop"})
+    var menu_li_buildup = menu_li_nop.clone({text:"Buil Up"});
+    menu.addNode(menu_li_nop); menu.addNode(menu_li_buildup);
 
     // Create page contents.
     // There are called only the page render.
@@ -52,7 +57,7 @@
     var tMain = {
       frame: function(){
         return h('main', {key:this}, [
-          h('div.contents', {}, [""]),
+          h('div.contents', {}, [menu.render()]),
           h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, [])
         ]);
       }

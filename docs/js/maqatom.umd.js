@@ -6,7 +6,7 @@
 
   // import VDOM.
   const h = exports.maquette.h;
-  const m = exports.maquette.createMapping;
+  const createMapping = exports.maquette.createMapping;
 
   function genShortUniq() {
     return "xxxxxxxxxxxx".split("").map(function(x){
@@ -40,7 +40,7 @@
     return h('input#' + id, {type: 'number', classes: classes, style: style, onchange: onChangeFunc, min: min, max: max, step: step}, []);
   };
   function atomCombobox(id, opt = [{val:0, text: ''}], onSelectFunc, classes = {}, style =  ''){
-    var mapping = m(function getKey(x){return x;},
+    var mapping = createMapping(function getKey(x){return x;},
       function create(x){
         return h('option', {key: x.val, value: x.val}, [x.text]);
       },
@@ -63,20 +63,37 @@
   };
 
   MetaNode.prototype.setRender = function(vr, args){
-    if('function' !== typeof vr){ throw new Error();}
+    if('function' !== typeof vr){ throw new Error('Have to set the render function.');}
 
     this._vr = vr;
     this._args = args;
   };
 
   MetaNode.prototype.render = function(){
-      let v = this._vr(this._args)
-      let c = []
+    let v = this._vr(this._args)
+    let c = []
 
-      this._children.forEach(function(m){c.push(m.render())});
-      v.children = c;
+    this._children.forEach(function(m){c.push(m.render())});
+    v.children = c;
 
-      return v;
+    return v;
+  };
+
+  MetaNode.prototype.clone = function createMetaNode(args = undefined){
+    let m = new MetaNode();
+
+    m._vr = this._vr;
+    m._children = this._children;
+    m._key = genShortUniq();
+    
+    if(undefined !== args){
+      m._args = args;
+    }
+    else{
+      m._args = this.args;
+    }
+
+    return m;
   };
 
   function createMetaNode(vr = undefined, args = {}){ // v = function(args){return h();}
