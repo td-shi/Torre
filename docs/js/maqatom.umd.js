@@ -70,9 +70,14 @@
   };
 
   MetaNode.prototype.render = function(){
-    let v = this._vr(this._args)
+    let a = this._args
+    let v = this._vr(a)
+
 
     if(0 < this._children.length){
+      if(undefined == v.children){
+        v.children = []
+      }
       this._children.forEach(function(m){v.children.push(m.render())});
     }
 
