@@ -37,11 +37,15 @@
       torre: null
     }
 
+    function onTestClick(e){
+      console.log(domNode.value)
+    }
+
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
     var menu = mN(function(args){return h('ul');});
-    var menu_li_nop = mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"nop"})
-    var menu_li_buildup = menu_li_nop.clone({text:"Buil Up"});
+    var menu_li_buildup = mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"Build up"})
+    var menu_li_nop = mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "Nop"})
     menu.addNode(menu_li_nop); menu.addNode(menu_li_buildup);
 
     // Create page contents.
