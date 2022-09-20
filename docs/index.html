@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
     <link rel="stylesheet" href="css/common.css" />
     <link rel="manifest" href="manifest.json" />
+    <script src="js/maqatom.umd.js"></script>
     <script src="https://unpkg.com/maquette@3.3.4/dist/maquette.umd.js"></script>
   </head>
   <body>
@@ -20,7 +21,6 @@
       <div class="spinner"></div>
     </div>
   <script src="js/gutil.js"></script>
-  <script src="js/maqatom.umd.js"></script>
   <script>
     // Static utility.
     const vPage = maquette.createProjector();
@@ -38,7 +38,7 @@
     }
 
     function onTestClick(e){
-      console.log(event.target.value)
+      console.log(e.target.value)
     }
 
     // Organism component.
