@@ -71,12 +71,10 @@
 
   MetaNode.prototype.render = function(){
     let v = this._vr(this._args)
-    let c = []
-    console.log(this._key)
-    console.log(this._args)
 
-    this._children.forEach(function(m){c.push(m.render())});
-    v.children = c;
+    if(0 < this._children.length){
+      this._children.forEach(function(m){v.children.push(m.render())});
+    }
 
     return v;
   };
