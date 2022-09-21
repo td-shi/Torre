@@ -53,7 +53,7 @@
 
   const MetaNode = function(){
     this._vr = undefined;
-    this._args = undefined;
+    this._args = {};
     this._children = [];
     this._key = genShortUniq();
   };
@@ -84,7 +84,7 @@
     return v;
   };
 
-  MetaNode.prototype.clone = function createMetaNode(args = undefined){
+  MetaNode.prototype.clone = function(args = undefined){
     let m = new MetaNode();
 
     m._vr = this._vr;
