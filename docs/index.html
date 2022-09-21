@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
     <link rel="stylesheet" href="css/common.css" />
     <link rel="manifest" href="manifest.json" />
-    <script src="js/maqatom.umd.js"></script>
     <script src="https://unpkg.com/maquette@3.3.4/dist/maquette.umd.js"></script>
   </head>
   <body>
@@ -21,6 +20,7 @@
       <div class="spinner"></div>
     </div>
   <script src="js/gutil.js"></script>
+  <script src="js/maqatom.umd.js"></script>
   <script>
     // Static utility.
     const vPage = maquette.createProjector();
@@ -44,9 +44,12 @@
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
     var menu = mN(function(args){return h('ul');});
-    var menu_li_buildup = mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"Build up"})
-    var menu_li_nop = mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "Nop"})
-    menu.addNode(menu_li_nop); menu.addNode(menu_li_buildup);
+    menu.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "Nop"}));
+    menu.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"Build up"}));
+
+    var mainContents = mN(function(args){return h('main');})
+    mainContents.addNode(mN(function(args){return h('div.contents', {}, [menu.render()]);}));
+    mainContents.addNode(mN(function(args){return h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, []);}));
 
     // Create page contents.
     // There are called only the page render.
@@ -59,12 +62,7 @@
     };
 
     var tMain = {
-      frame: function(){
-        return h('main', {key:this}, [
-          h('div.contents', {}, [menu.render()]),
-          h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, [])
-        ]);
-      }
+      frame: mainContents.render
     }
 
     var tFooter = {
