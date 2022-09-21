@@ -39,16 +39,28 @@
 
     function onTestClick(e){
       console.log(e.target.value)
+      pageDict.current = e.target.value
     }
 
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
     var menu = mN(function(args){return h('ul');});
-    menu.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "Nop"}));
+    menu.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "result"}));
     menu.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"Build up"}));
 
+    var result = mN(function(args){return h('ul');});
+    result.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"OK"}));
+    result.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "menu"}));
+
+    var pageDict = {
+      menu: menu,
+      result: result,
+      current: "menu",
+      render: function(name){return this[name].render();}
+    }
+
     var mainContents = mN(function(args){return h('main');})
-    mainContents.addNode(mN(function(args){return h('div.contents', {}, [menu.render()]);}));
+    mainContents.addNode(mN(function(args){return h('div.contents', {}, [pageDict.render(pageDict.current)]);}));
     mainContents.addNode(mN(function(args){return h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, []);}));
 
     // Create page contents.
@@ -62,7 +74,7 @@
     };
 
     var tMain = {
-      frame: mainContents.render
+      frame: function(){return mainContents.render();}
     }
 
     var tFooter = {
