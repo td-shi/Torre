@@ -105,6 +105,7 @@
     // Page. Start the page rendering.
     document.addEventListener('DOMContentLoaded', function(){
       document.getElementById('fused').remove();
+      currentContents = menu
 
       if(gU.storageAvailable('localStorage')){
         let torre = gU.getItemLsf('TORRE');
