@@ -69,6 +69,10 @@
     this._args = args;
   };
 
+  MetaNode.prototype.getKey = function(){
+    return this._key;
+  };
+
   MetaNode.prototype.render = function(){
     let a = this._args
     let v = this._vr(a)

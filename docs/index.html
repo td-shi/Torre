@@ -36,31 +36,39 @@
     let noDB = {
       torre: null
     }
+    let currentContents = mN(function(args){
+      return h('div#fused',{}, [
+        h('p', {}, ["Check:"]),
+        h('ul',{}, [
+          h('li', {}, ["The device you want to connect is correct."]),
+          h('li', {}, ["Permissions are allowed to execute javascript."])
+        ]),
+        h('div.spinner')
+      ]);
+    });
 
-    function onTestClick(e){
+    function onNextResult(e){
       console.log(e.target.value)
-      pageDict.current = e.target.value
+      currentContents = result
+    }
+
+    function onNextMenu(e){
+      console.log(e.target.value)
+      currentContents = menu
     }
 
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
     var menu = mN(function(args){return h('ul');});
-    menu.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "result"}));
+    menu.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onNextResult, value: String(args.text)}, [String(args.text)])]);} , {text: "result"}));
     menu.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"Build up"}));
 
     var result = mN(function(args){return h('ul');});
     result.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"OK"}));
-    result.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onTestClick, value: String(args.text)}, [String(args.text)])]);} , {text: "menu"}));
-
-    var pageDict = {
-      menu: menu,
-      result: result,
-      current: "menu",
-      render: function(name){return this[name].render();}
-    }
+    result.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onNextMenu, value: String(args.text)}, [String(args.text)])]);} , {text: "menu"}));
 
     var mainContents = mN(function(args){return h('main');})
-    mainContents.addNode(mN(function(args){return h('div.contents', {}, [pageDict.render(pageDict.current)]);}));
+    mainContents.addNode(mN(function(args){return h('div.contents', {}, [currentContents.render()]);}));
     mainContents.addNode(mN(function(args){return h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, []);}));
 
     // Create page contents.
