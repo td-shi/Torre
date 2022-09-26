@@ -22,6 +22,49 @@
   <script src="js/gutil.js"></script>
   <script src="js/maqatom.umd.js"></script>
   <script>
+    // Make Test
+    const listenObject = function(){this._args = {};}
+    listenObject.prototype = new EventTarget()
+    listenObject.prototype._merge = function(target, source, opts) {
+      const isObject = function(obj){ return obj && typeof obj === 'object' && !Array.isArray(obj)};
+      const isConcatArray = opts && opts.concatArray;
+      let result = Object.assign({}, target);
+      if (isObject(target) && isObject(source)) {
+        for (const [sourceKey, sourceValue] of Object.entries(source)) {
+          const targetValue = target[sourceKey];
+          if (isConcatArray && Array.isArray(sourceValue) && Array.isArray(targetValue)) {
+            result[sourceKey] = targetValue.concat(Array.prototype.slice.call(sourceValue));
+          }
+          else if (isObject(sourceValue) && target.hasOwnProperty(sourceKey)) {
+            result[sourceKey] = this._merge(targetValue, sourceValue, opts);
+          }
+          else {
+            Object.assign(result, {[sourceKey]: sourceValue});
+          }
+        }
+      }
+      return result;
+    };
+    listenObject.prototype._search = function(key) {
+      const isObject = function(obj){ return obj && typeof obj === 'object' && !Array.isArray(obj)};
+      let result = undefined;
+      if (isObject(key)) {
+        result = {};
+      }
+      return result;
+    };
+    listenObject.prototype.set = function(args){
+      this._args = this._merge(this._args, args, {concatArray: true})
+    }
+    listenObject.prototype.overWrite = function(args){
+      this._args = args
+    }
+    function createListen(args = {}){
+      let l = new listenObject()
+      l._args = args;
+      return l;
+    }
+
     // Static utility.
     const vPage = maquette.createProjector();
     const h = maquette.h;
@@ -33,9 +76,7 @@
     let appArgs = {
       busy: false
     }
-    let noDB = {
-      torre: null
-    }
+    let gameDB = createListen({torre: {}})
     let currentContents = mN(function(args){
       return h('div#fused',{}, [
         h('p', {}, ["Check:"]),
@@ -110,9 +151,9 @@
       if(gU.storageAvailable('localStorage')){
         let torre = gU.getItemLsf('TORRE');
 
-        if(torre){
-          noDB.torre = JSON.parse(torre);
-        }
+        //if(torre){
+        //  gameDB.set(JSON.parse(torre));
+        //}
       }
       else{
         confirm("Your browser storage is not available.");
