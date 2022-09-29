@@ -69,6 +69,10 @@
     this._args = args;
   };
 
+  MetaNode.prototype.setArgs = function(args){
+    this._args = args;
+  };
+
   MetaNode.prototype.getKey = function(){
     return this._key;
   };

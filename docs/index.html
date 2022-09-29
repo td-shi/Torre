@@ -7,7 +7,8 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
     <link rel="stylesheet" href="css/common.css" />
-    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="css/modal.css" />
+    <!-- link rel="manifest" href="manifest.json" / -->
     <script src="https://unpkg.com/maquette@3.3.4/dist/maquette.umd.js"></script>
   </head>
   <body>
@@ -45,11 +46,14 @@
       }
       return result;
     };
-    listenObject.prototype._search = function(key) {
-      const isObject = function(obj){ return obj && typeof obj === 'object' && !Array.isArray(obj)};
-      let result = undefined;
-      if (isObject(key)) {
-        result = {};
+    listenObject.prototype.get = function(key) {
+      const propertyArray = key.split('.');
+      let result = this._args;
+
+      for (let i = 0; i <= propertyArray.length - 1; i += 1) {
+        if (propertyArray[i] === '' ) { return undefined; }
+        if (typeof result[propertyArray[i]] === 'undefined') { return undefined; }
+        result = result[propertyArray[i]];
       }
       return result;
     };
@@ -76,7 +80,7 @@
     let appArgs = {
       busy: false
     }
-    let gameDB = createListen({torre: {}})
+    let gameDB = createListen({torre: {gold: 1000, treasure: 0, force: 0, floor: [], past: 20}})
     let currentContents = mN(function(args){
       return h('div#fused',{}, [
         h('p', {}, ["Check:"]),
@@ -89,28 +93,77 @@
     });
 
     function onNextResult(e){
-      console.log(e.target.value)
+      console.log(e.currentTarget.value)
       currentContents = result
     }
 
     function onNextMenu(e){
-      console.log(e.target.value)
+      console.log(e.currentTarget.value)
       currentContents = menu
+    }
+    
+    function onOpenModal(e){
+      modal.setArgs({visible: true, action: function(e){}})
     }
 
     // Organism component.
     // There should return an object contain .render() which return the VNode (maquette's object from h()).
-    var menu = mN(function(args){return h('ul');});
-    menu.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onNextResult, value: String(args.text)}, [String(args.text)])]);} , {text: "result"}));
-    menu.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"Build up"}));
 
-    var result = mN(function(args){return h('ul');});
-    result.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"OK"}));
-    result.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onNextMenu, value: String(args.text)}, [String(args.text)])]);} , {text: "menu"}));
+    var actSelect = mN(function(args){return h('ul.actSelect');})
+    actSelect.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onNextResult, value: String(args.text)}, [String(args.text)])]);} , {text: "result"}));
+    actSelect.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onOpenModal, value: String(args.text)}, [String(args.text)])]);}, {text:"Build up"}));
+
+    var troopResult = mN(function(args){return h('ul.troopResult');})
+    troopResult.addNode(mN(function(args){return h('li',{}, [h('span', {}, [String(args.text)])]);}, {text:"OK"}));
+    troopResult.addNode(mN(function(args){return h('li',{}, [h('button', {onclick: onNextMenu, value: String(args.text)}, [String(args.text)])]);} , {text: "menu"}));
+
+    var menu = mN(function(args){return h('div.menu');});
+    menu.add(mN(function(args){return h('p', {}, ["batler info"]);}))
+    menu.add(actSelect)
+    menu.add(mN(function(args){
+      return h('ul.system', {}, [
+        h('li', {}, [h('button', {}, ["Profile"])]),
+        h('li', {}, [h('button', {}, ["Nickname"])]),
+        h('li', {}, [h('button', {}, ["Abandon"])]),
+      ]);
+    }))
+
+    var result = mN(function(args){return h('div.result');});
+
+    var modal = mN(function(args){
+      let visible = args.visible
+
+      function onCancel(e){
+        modal.setArgs({visible: false, action: function(e){}})
+      }
+
+      function onAction(e){
+        args.action(e)
+        modal.setArgs({visible: false, action: function(e){}})
+      }
+    
+      return h('div.modal', {style: "display: " + (visible? "block;": "none;")},[
+        h('div.modal-content', {},[
+          h('div.modal-header', {}, [
+            h('span.close', {onclick: onCancel}, ["X"]),
+            h('h2', {}, ["Modal Header"])
+          ]),
+          h('div.modal-body', {}, [
+            h('p', {}, ["Modal body"])
+          ]),
+          h('div.modal-footer', {}, [
+            h('h3', {}, ["Modal footer"]),
+            h('button', {onclick: onCancel}, ["Cancel"]),
+            h('button', {onclick: onAction}, ["OK"])
+          ])
+        ])
+      ]);
+    }, {visible: false, action: function(e){}})
 
     var mainContents = mN(function(args){return h('main');})
     mainContents.addNode(mN(function(args){return h('div.contents', {}, [currentContents.render()]);}));
     mainContents.addNode(mN(function(args){return h('div.spinner', {style: "display: " + ((appArgs.busy) ? "block;": "none;")}, []);}));
+    mainContents.addNode(modal);
 
     // Create page contents.
     // There are called only the page render.
@@ -163,7 +216,7 @@
       vPage.append(document.body, tMain.frame);
       vPage.append(document.body, tFooter.frame);
     });
-
+/*
     if ('serviceWorker' in navigator) {
      navigator.serviceWorker.register('sw.js')
       .then(
@@ -176,6 +229,7 @@
         console.log("Error Log: " + error);
       });
     }
+*/
   </script>
   </body>
 </html>
